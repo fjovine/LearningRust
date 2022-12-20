@@ -166,8 +166,6 @@ BOOL try_build_tree_from_string(PNODE * root, char ** error_message, char ** tre
     }
 }
 
-enum 
-
 void print_tree(int left_indent, PNODE root)
 {
     for (int i=0; i<left_indent; i++) {
@@ -183,7 +181,7 @@ void print_tree(int left_indent, PNODE root)
     print_tree(left_indent + 2, root->right);
 }
 
-void visit_preorder(PNODE root, void (*iterator)())
+// void visit_preorder(PNODE root, void (*iterator)())
 
 /*** UNIT TESTS */
 void try_get_identifier_test_case(char *case_name, char *expected, char * test, char * error_if_fails)
@@ -212,7 +210,7 @@ void try_get_identifier_test_case_returns_the_remaining_string(char *case_name, 
     printf("Test case %s: OK\n", case_name);
 }
 
-void try_build_tree_from_string_test_case(char *case_name)
+//void try_build_tree_from_string_test_case(char *case_name)
 
 int main()
 {
@@ -227,7 +225,7 @@ int main()
     try_get_identifier_test_case_returns_the_remaining_string("5. case", "Remaining", "\"1234567\"Remaining");
 #endif
 
-#if 0
+#if 1
     root = create_node("1");
     print_tree(0, root);
     puts("-----------");
@@ -241,7 +239,7 @@ int main()
 #endif
 
 
-#if 1
+#if 0
     char * error_message;
     char * prefix = "(\"A\",0,0)";
     if (try_build_tree_from_string(&root, &error_message, &prefix)) {
