@@ -16,6 +16,10 @@ impl Node {
         result
     }
 
+    pub fn create_from(s:&str) -> Self {
+        Node::new(s)
+    }
+
     pub fn left(mut self, node : Node) -> Self {
         self.left = Some(Box::new(node));
         self
