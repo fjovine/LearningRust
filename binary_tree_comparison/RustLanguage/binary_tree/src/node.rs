@@ -1,3 +1,5 @@
+use crate::string_reader;
+
 // guardare https://dawchihliou.github.io/articles/binary-tree-insertion-in-rust
 pub struct Node {
     pub payload : String,
@@ -16,19 +18,48 @@ impl Node {
         result
     }
 
-    pub fn create_from(s:&str) -> Self {
-        Node::new(s)
-    }
-
-    pub fn left(mut self, node : Node) -> Self {
+    pub fn left(&mut self, node : Node) {
         self.left = Some(Box::new(node));
-        self
     }
 
-    pub fn right(mut self, node : Node) -> Self {
+    pub fn right(&mut self, node : Node) {
         self.right = Some(Box::new(node));
-        self
     }
+
+    fn decode(reader : &mut string_reader::StringReader) -> Node {
+        reader.accept('"');
+        let s : &str = &reader.get_next_quoted_string()[..];
+        let mut result = Node::new(s);
+        reader.accept(',');
+        match reader.next() {
+            Some(c) => 
+                if c ==  '(' {
+                   result.left(Node::decode(reader));
+                } else if c!='0' {
+                    panic!("Invalid char");
+                },
+            None => panic!("String finished too early"),
+        }
+        reader.accept(',');
+        match reader.next() {
+            Some(c) => 
+                if c ==  '(' {
+                   result.right(Node::decode(reader));
+                } else if c!='0' {
+                    panic!("Invalid char");
+                },
+            None => panic!("String finished too early"),
+        }
+        reader.accept(')');
+        result
+    }    
+
+    pub fn create_from(s:&str) -> Self {
+        let mut reader = string_reader::StringReader::new(s);
+        println!("1");
+        reader.accept('(');
+        Node::decode(&mut reader)
+    }    
 
     pub fn print (& self, left_indent : usize) {
         let indentation = " ".repeat(left_indent);
