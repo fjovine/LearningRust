@@ -93,3 +93,19 @@ impl Node {
         result
     }
 }
+
+#[cfg(test)]
+mod test {
+    fn decode_works_well_check(model :&str, expected:&str)
+    {
+        let root = super::Node::create_from(model);
+        let found = &root.to_string();
+        println!("model {} expeced {} found {}", model, expected, found)
+        assert!(expected.eq(found));
+    }
+
+    #[test]
+    fn decode_works_well() {
+        decode_works_well_check("(\"AA\", 0  ,    0)","(\"AA\",0,0");
+    }
+}
