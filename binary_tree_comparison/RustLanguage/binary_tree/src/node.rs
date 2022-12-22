@@ -100,12 +100,21 @@ mod test {
     {
         let root = super::Node::create_from(model);
         let found = &root.to_string();
-        println!("model {} expeced {} found {}", model, expected, found)
+        println!("model {} expected {} found {}", model, expected, found);
         assert!(expected.eq(found));
     }
 
     #[test]
     fn decode_works_well() {
-        decode_works_well_check("(\"AA\", 0  ,    0)","(\"AA\",0,0");
+        decode_works_well_check("(\"AA\", 0  ,    0)","(\"AA\",0,0)");
+        decode_works_well_check(
+            "(\"A\",
+                (\"B\",0,0),
+                (\"C\",
+                  (\"D\",0,0),
+                  (\"E\",
+                      (\"F\",0,0),
+                      (\"G\",0,0)))))",
+            "(\"A\",(\"B\",0,0),(\"C\",(\"D\",0,0),(\"E\",(\"F\",0,0),(\"G\",0,0))))");
     }
 }
