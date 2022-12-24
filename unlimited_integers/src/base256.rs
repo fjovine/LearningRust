@@ -117,7 +117,7 @@ impl Base256 {
             // hexadecimal format
             let mut i = 0;
             numero = String::from(&s[2..s.len()]);
-            println!("numero : {}", numero);
+            //println!("numero : {}", numero);
             let mut digits = String::new();
             for c in numero.chars().rev() {
                 println!("C:{}", c);
@@ -146,14 +146,13 @@ impl Base256 {
         println!("numero {}", numero);
         while numero.len() > 0 {
             let (resto, risultato) = Base256::divide_by_two(&numero);
-            println!("resto {} numero {} risultato {}", resto, numero, risultato);
-            if resto > 0 {
-                cifra_corrente |= 1 << bit_corrente;
-            }
             if bit_corrente>=64 {
                 result.cifre.push(cifra_corrente);
                 bit_corrente = 0;
                 cifra_corrente = 0;
+            }
+            if resto > 0 {
+                cifra_corrente |= 1 << bit_corrente;
             }
             numero = risultato;
             bit_corrente += 1;
@@ -194,6 +193,8 @@ impl Base256 {
     pub fn sub(self : &mut Self, other: Base256) {
         let mut other = Base256::new_from(&other);
         other.twos_complement();
+        println!("oher ");
+        other.debug());
         self.sum(other);
     }
 
@@ -326,16 +327,22 @@ mod tests {
     fn sub_check_case(a:&str, b:&str, expected_result: &str) {
         let mut a = super::Base256::new(a);
         let b = super::Base256::new(b);
-        println!("a {}", a.to_string());
-        println!("b {}", b.to_string());
+        println!("a");
+        a.debug();
+        //println!("b {}", b.to_string());
         a.sub(b);
-        println!("a {}", a.to_string());
+        //println!("a {}", a.to_string());
         assert_eq!(a.to_string().eq(expected_result), true);        
     }
     
     #[test]
     fn sub_works_well() {
-        sub_check_case("10","1","90");
-        sub_check_case("1000000000000000000000000000000000000000","1", "3");
+//        sub_check_case("10","1","9");
+//        sub_check_case("100","1","99");
+//        sub_check_case("10000","1","9999");
+//        sub_check_case("100000000","1","99999999");
+//        sub_check_case("10000000000000000","1","9999999999999999");
+        sub_check_case("100000000000000000000000000000000","1","99999999999999999999999999999999");
+//        sub_check_case("1000000000000000000000000000000000000000","1", "3");
     }
 }
