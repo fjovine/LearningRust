@@ -100,7 +100,6 @@ impl Base256 {
 
     pub fn new(s: &str) -> Self {
         fn convert_and_push(result: &mut Base256, s: &str) {
-            println!("convert_and_push {}",s);
             match u64::from_str_radix(&s, 16) {
                 Ok(n) => result.cifre.push(n),
                 Err(_) => panic!("The {} number is not hex", s),
@@ -117,10 +116,8 @@ impl Base256 {
             // hexadecimal format
             let mut i = 0;
             numero = String::from(&s[2..s.len()]);
-            //println!("numero : {}", numero);
             let mut digits = String::new();
             for c in numero.chars().rev() {
-                println!("C:{}", c);
                 digits.insert(0, c);
                 i += 1;
                 if i >= 16 {
@@ -143,7 +140,6 @@ impl Base256 {
         }
 
         let mut bit_corrente = 0;
-        println!("numero {}", numero);
         while numero.len() > 0 {
             let (resto, risultato) = Base256::divide_by_two(&numero);
             if bit_corrente>=64 {
@@ -157,17 +153,12 @@ impl Base256 {
             numero = risultato;
             bit_corrente += 1;
         }
-        println!("Qui");
         if bit_corrente > 0 {
-            println!("Qui 01");
             result.cifre.push(cifra_corrente);
         }
-        println!("Qui 1");
         if is_negative {
             result.twos_complement();
         }
-        println!("Qui 2");
-
         result
     }
 
@@ -193,11 +184,7 @@ impl Base256 {
     pub fn sub(self : &mut Self, other: Base256) {
         let mut other = Base256::new_from(&other);
         other.twos_complement();
-        print!("other ");
         self.sum(&other);
-        other.debug();
-        print!("self ");
-        self.debug();
     }
 
     pub fn debug(self: &Self) {
@@ -286,16 +273,14 @@ mod tests {
     
     fn new_check_case(a: &str, expected_sign: bool, expected_result: &str) {
         let a = super::Base256::new(a);
-        println!("Is negative {}", a.is_negative());
         assert_eq!(a.is_negative(), expected_sign);
-        println!("found {} expected {}", a.to_string(), expected_result);
         assert_eq!(a.to_string().eq(expected_result), true);
     }
 
     #[test]
     fn new_works_well() {
         new_check_case("1000", false, "1000");
-/*        new_check_case("0x8", false, "8");
+        new_check_case("0x8", false, "8");
         new_check_case("0xA", false, "10");
         new_check_case("0x100", false, "256");
         new_check_case("0x10", false, "16");
@@ -305,46 +290,39 @@ mod tests {
             "103929005307130220006098923584552504982110632080",
         );
         new_check_case("-1000", true, "-1000");
-*/
+
     }
     fn sum_check_case(a: &str, b: &str, expected_result: &str) {
         let mut a = super::Base256::new(a);
         let b = super::Base256::new(b);
-        println!("a {}", a.to_string());
-        println!("b {}", b.to_string());
         a.sum(&b);
-        println!("a {}", a.to_string());
         assert_eq!(a.to_string().eq(expected_result), true);
     }
 
-//$$$    #[test]
-//$$$    fn sum_works_well() {
-//$$$        sum_check_case("1", "1", "2");
-//$$$        sum_check_case("1000", "1", "1001");
-//$$$        sum_check_case("1", "1000", "1001");
-//$$$        sum_check_case("1", "-1000", "-999");
-//$$$        sum_check_case("-1", "-1000", "-1001");
-//$$$    }
+    #[test]
+    fn sum_works_well() {
+        sum_check_case("1", "1", "2");
+        sum_check_case("1000", "1", "1001");
+        sum_check_case("1", "1000", "1001");
+        sum_check_case("1", "-1000", "-999");
+        sum_check_case("-1", "-1000", "-1001");
+    }
 
     fn sub_check_case(a:&str, b:&str, expected_result: &str) {
         let mut a = super::Base256::new(a);
         let b = super::Base256::new(b);
-        println!("a");
-        a.debug();
-        //println!("b {}", b.to_string());
         a.sub(b);
-        //println!("a {}", a.to_string());
         assert_eq!(a.to_string().eq(expected_result), true);        
     }
     
     #[test]
     fn sub_works_well() {
-//        sub_check_case("10","1","9");
-//        sub_check_case("100","1","99");
-//        sub_check_case("10000","1","9999");
-//        sub_check_case("100000000","1","99999999");
-//        sub_check_case("10000000000000000","1","9999999999999999");
+        sub_check_case("10","1","9");
+        sub_check_case("100","1","99");
+        sub_check_case("10000","1","9999");
+        sub_check_case("100000000","1","99999999");
+        sub_check_case("10000000000000000","1","9999999999999999");
         sub_check_case("100000000000000000000000000000000","1","99999999999999999999999999999999");
-//        sub_check_case("1000000000000000000000000000000000000000","1", "3");
+        sub_check_case("1000000000000000000000000000000000000000","10",  "999999999999999999999999999999999999990");
     }
 }
