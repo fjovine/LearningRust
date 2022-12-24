@@ -18,7 +18,7 @@ impl Base256 {
     fn get_cifra(&self, i: usize) -> u64 {
         match self.cifre.get(i) {
             Some(n) => *n as u64,
-            None => 0,
+            None => if self.is_negative() {0xFFFF_FFFF_FFFF_FFFF} else { 0 },
         }
     }
 
@@ -178,7 +178,7 @@ impl Base256 {
     }
 
     /// Sums other to self S = O + S
-    pub fn sum(self: &mut Self, other: Base256) {
+    pub fn sum(self: &mut Self, other: &Base256) {
         let mut partial_sum: u128;
         let mut resto = 0u128;
         let max = cmp::max(self.cifre.len(), other.cifre.len());
@@ -193,12 +193,14 @@ impl Base256 {
     pub fn sub(self : &mut Self, other: Base256) {
         let mut other = Base256::new_from(&other);
         other.twos_complement();
-        println!("oher ");
-        other.debug());
-        self.sum(other);
+        print!("other ");
+        self.sum(&other);
+        other.debug();
+        print!("self ");
+        self.debug();
     }
 
-    pub fn debug(self) {
+    pub fn debug(self: &Self) {
         let mut i = 0;
         for cifra in self.cifre.iter() {
             println!("{} {:#016x}", i, cifra);
@@ -310,7 +312,7 @@ mod tests {
         let b = super::Base256::new(b);
         println!("a {}", a.to_string());
         println!("b {}", b.to_string());
-        a.sum(b);
+        a.sum(&b);
         println!("a {}", a.to_string());
         assert_eq!(a.to_string().eq(expected_result), true);
     }
