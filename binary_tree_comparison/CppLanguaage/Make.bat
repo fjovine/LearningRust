@@ -1,2 +1,2 @@
-g++.exe .\main.cpp .\StringReader.cpp
+g++.exe .\main.cpp .\StringReader.cpp .\Node.cpp
 .\a.exe

@@ -1,5 +1,6 @@
 #include "StringReader.h"
 #include <iostream>
+#include <string>
 #include <assert.h>
 using namespace std;
 
@@ -29,7 +30,11 @@ char StringReader::next() {
 }
 
 void StringReader::accept(char c) {
-    assert(next() == c);
+    char cc = next();
+    if (cc != c) {
+        cout << "Accept : atteso (" << c << ") trovato (" << cc <<")\n";
+    }
+    assert(cc == c);
 }
 
 string StringReader::get_next_quoted_string()
