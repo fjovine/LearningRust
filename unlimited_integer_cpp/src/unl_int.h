@@ -12,6 +12,7 @@ private:
     string divide_by_two(string &s, unsigned &resto);
     void ones_complement();
     void twos_complement();
+    void convert_and_push(string &s);
 public:
     unsigned lsd();
     unsigned msd();

@@ -1,5 +1,14 @@
 #include "unl_int.h"
+#include <algorithm>
+#include <string>
 #include <cassert>
+
+using namespace std;
+
+bool starts_with(const string& str, const string& prefix)
+{
+    return str.size() >= prefix.size() && str.compare(0, prefix.size(), prefix) == 0;
+}
 unsigned UnlInteger::get_cifra(int i) {
     if (i <cifre.size()) {
         return cifre[i];
@@ -86,9 +95,32 @@ bool UnlInteger::is_negative()
 }
 
 void UnlInteger::convert_and_push(string &s) {
-
+    unsigned long result = stoul(s, 0, 16);
+    cifre.push_back((unsigned)result);
 }
 
-UnlInteger::UnlInteger(string & str) {
-
+UnlInteger::UnlInteger(string &s) {
+    unsigned cifra_corrente = 0;
+    string numero = "";
+    string digits;
+    bool is_negative = false;
+    if ( starts_with(s, "0x") || starts_with(s,"0X0")) {
+        // hexadecimal
+        int i=0;
+        numero = s.substr(2);
+        reverse(numero.begin(), numero.end());
+        string digits;
+        for (char &c : numero) {
+            digits.insert(0, 1, c);
+            i++;
+            if (i>=16) {
+                convert_and_push(digits);
+                digits.clear();
+                i=0;
+            }
+        }
+        if (i>0) {
+            convert_and_push(digits);
+        }
+    }
 }
